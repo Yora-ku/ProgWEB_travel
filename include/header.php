@@ -42,8 +42,8 @@ include_once __DIR__ . '/../config/baseurl.php';
 
       <!-- Nav Menu -->
       <nav class="flex gap-7">
-        <a href="#home" class="font-semibold text-gray-400 hover:text-white transition">Homes</a>
-        <a href="#hotels" class="font-semibold text-gray-400 hover:text-white transition">Hotels</a>
+        <a href="<?= base_url('page/hotel.php') ?>" class="font-semibold text-gray-400 hover:text-white transition">Homes</a>
+        <a href="<?= base_url('page/index.php') ?>" class="font-semibold text-gray-400 hover:text-white transition">Hotels</a>
         <a href="#contact" class="font-semibold text-gray-400 hover:text-white transition">Contact Us</a>
       </nav>
     </div>
