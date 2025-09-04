@@ -57,7 +57,7 @@ $resultDest = $conn->query($sqlDest);
             <!-- Button -->
             <div class="flex items-end">
             <button class="w-full px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold shadow-md hover:bg-blue-700 transition">
-                Search
+              <a href="<?= base_url('/page/search.php')?>">Search</a>  
             </button>
             </div>
 
