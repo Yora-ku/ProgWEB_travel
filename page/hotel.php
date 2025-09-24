@@ -226,38 +226,25 @@ if (!isset($_SESSION['user'])) {
       </div>
     </div>
 
-    <!-- Text & Features -->
-    <div class="text-[#001f3f]"> <!-- ganti warna teks jadi navy -->
-      <h2 class="text-4xl font-bold mb-6">Get free flight status updates on the go</h2>
-      <ul class="space-y-6">
-        <li class="flex items-start gap-4">
-          <img src="../asset/icons/clock.png" class="w-8 h-8" alt="icon">
-          <p>Track over <span class="font-bold">110,000 global flights</span> in real time</p>
-        </li>
-        <li class="flex items-start gap-4">
-          <img src="../asset/icons/airport.png" class="w-8 h-8" alt="icon">
-          <p>Easily navigate airports with check-in counter, boarding gate, and baggage claim info</p>
-        </li>
-        <li class="flex items-start gap-4">
-          <img src="../asset/icons/plane.png" class="w-8 h-8" alt="icon">
-          <p>Get <span class="font-bold">real-time flight status</span> updates anytime</p>
-        </li>
-      </ul>
-    </div>
-  </div>
+   <!-- Text & Features -->
+<div class="text-[#001f3f]">
+  <h2 class="text-4xl font-bold mb-6">Get free flight status updates on the go</h2>
+  <ul class="space-y-6">
+    <li class="flex items-start gap-4">
+      <img src="../asset/hotels/ticketpesawat.png" class="w-12 h-12 flex-shrink-0" alt="icon">
+      <p class="flex-1">Track over <span class="font-bold">110,000 global flights</span> in real time</p>
+    </li>
+    <li class="flex items-start gap-4">
+      <img src="../asset/hotels/boarding.png" class="w-12 h-12 flex-shrink-0" alt="icon">
+      <p class="flex-1">Easily navigate airports with check-in counter, boarding gate, and baggage claim info</p>
+    </li>
+    <li class="flex items-start gap-4">
+      <img src="../asset/hotels/realtimestatus.png" class="w-12 h-12 flex-shrink-0" alt="icon">
+      <p class="flex-1">Get <span class="font-bold">real-time flight status</span> updates anytime</p>
+    </li>
+  </ul>
+</div>
 </section>
-
-  <!-- Footer -->
-  <footer class="bg-gray-800 text-white py-16">
-    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-      <div><div class="flex items-center mb-4"><div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center"><i class="fas fa-plane text-white text-sm"></i></div><span class="ml-2 text-xl font-bold">Travel.HUB</span></div><p class="text-gray-400 mb-4">We connect you with the world's most amazing destinations.</p></div>
-      <div><h4 class="font-semibold text-lg mb-4">About Us</h4><ul class="space-y-2"><li><a href="#" class="text-gray-400 hover:text-white">Our Story</a></li><li><a href="#" class="text-gray-400 hover:text-white">Team</a></li></ul></div>
-      <div><h4 class="font-semibold text-lg mb-4">Services</h4><ul class="space-y-2"><li><a href="#" class="text-gray-400 hover:text-white">Flight Booking</a></li><li><a href="#" class="text-gray-400 hover:text-white">Hotel Reservation</a></li></ul></div>
-      <div><h4 class="font-semibold text-lg mb-4">Contact</h4><p class="text-gray-400">info@travelhub.com</p></div>
-    </div>
-    <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">&copy; 2024 Travel.HUB. All rights reserved.</div>
-  </footer>
-
   <script>
     $(document).ready(function(){
       var $carousel = $('.hero-carousel');
@@ -274,3 +261,7 @@ if (!isset($_SESSION['user'])) {
   </script>
 </body>
 </html>
+
+<?php
+include __DIR__ . "/../include/footer.php";
+?>
