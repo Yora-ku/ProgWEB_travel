@@ -12,6 +12,9 @@ $destinations = $conn->query($sqlDest);
 
 $sqlHotels = "SELECT * FROM hotels";
 $hotels = $conn->query($sqlHotels);
+
+$selectedDest = isset($_GET['destination']) ? intval($_GET['destination']) : null;
+$selectedHotel = isset($_GET['hotel']) ? intval($_GET['hotel']) : null;
 ?>
 
 <!DOCTYPE html>
@@ -44,55 +47,68 @@ $hotels = $conn->query($sqlHotels);
         <div>
           <label class="block font-bold mb-2 text-[#001f3f]">Nama Lengkap</label>
           <input type="text" name="fullname" required
-            class="w-full border-2 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#001f3f]">
+            class="w-full border-2 rounded-xl px-4 py-3 text-gray-900 focus:ring-2 focus:ring-[#001f3f]">
         </div>
 
         <!-- Email -->
         <div>
           <label class="block font-bold mb-2 text-[#001f3f]">Email</label>
           <input type="email" name="email" required
-            class="w-full border-2 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#001f3f]">
+            class="w-full border-2 rounded-xl px-4 py-3 text-gray-900 focus:ring-2 focus:ring-[#001f3f]">
         </div>
 
         <!-- Telepon -->
         <div>
           <label class="block font-bold mb-2 text-[#001f3f]">No. Telepon</label>
           <input type="tel" name="phone" required
-            class="w-full border-2 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#001f3f]">
+            class="w-full border-2 rounded-xl px-4 py-3 text-gray-900 focus:ring-2 focus:ring-[#001f3f]">
         </div>
 
        <!-- Destinasi -->
+        <?php if ($selectedDest): ?>
+  <input type="hidden" name="destination" value="<?= $selectedDest ?>">
+
 <div>
   <label class="block font-bold mb-2 text-[#001f3f]">Destinasi</label>
   <select name="destination" id="destination"
-    class="w-full border-2 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-400 text-[#001f3f]">
+    class="w-full border-2 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-400 text-[#001f3f]"<?= $selectedDest ? 'disabled' : '' ?>>
     <option value="" class="text-[#001f3f]">Pilih destinasi</option>
-    <?php while ($row = $destinations->fetch_assoc()): ?>
-      <option value="<?= $row['destination_id'] ?>" class="text-[#001f3f]">
-        <?= $row['name'] ?>
-      </option>
-    <?php endwhile; ?>
+<?php while ($row = $destinations->fetch_assoc()): ?>
+  <option value="<?= $row['destination_id'] ?>"
+    <?= ($row['destination_id'] == $selectedDest) ? 'selected' : '' ?>>
+    <?= $row['name'] ?>
+  </option>
+<?php endwhile; ?>
   </select>
 </div>
-
+<?php endif; ?>
         <!-- Hotel -->
+         
+
+<?php if ($selectedHotel): ?>
+  <input type="hidden" name="hotel" value="<?= $selectedHotel ?>">
+
+
        <div>
   <label class="block font-bold mb-2 text-[#001f3f]">Hotel</label>
   <select name="hotel" id="hotel"
     class="w-full border-2 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-400 text-[#001f3f]"
-    onchange="updateHotelPreview()">
-    <option value="" class="text-[#001f3f]">Pilih hotel</option>
-    <?php while ($row = $hotels->fetch_assoc()): ?>
-      <option value="<?= $row['hotel_id'] ?>"
-        data-img="<?= !empty($row['image_hotel']) ? '../asset/index/'.$row['image_hotel'] : 'https://via.placeholder.com/600x400?text=Hotel'; ?>"
-        data-desc="<?= htmlspecialchars($row['description']) ?>"
-        data-price="<?= (int) $row['price'] ?>"
-        class="text-[#001f3f]">
-        <?= $row['name'] ?>
-      </option>
-    <?php endwhile; ?>
+    onchange="updateHotelPreview()" <?= $selectedDest ? 'disabled' : '' ?>>
+    <option value="">Pilih hotel</option>
+<?php while ($row = $hotels->fetch_assoc()): ?>
+  <option 
+    value="<?= $row['hotel_id'] ?>"
+    data-name="<?= htmlspecialchars($row['name']) ?>"
+    data-img="<?= !empty($row['image_hotel']) ? '../'.$row['image_hotel'] : 'https://via.placeholder.com/600x400?text=Hotel'; ?>"
+    data-desc="<?= htmlspecialchars($row['description']) ?>"
+    data-price="<?= (int) $row['price'] ?>"
+    <?= ($row['hotel_id'] == $selectedHotel) ? 'selected' : '' ?>>
+    <?= $row['name'] ?>
+  </option>
+<?php endwhile; ?>
   </select>
 </div>
+<?php endif; ?>
 <!-- Tanggal -->
 <div class="grid grid-cols-2 gap-4">
   <div>
@@ -113,6 +129,10 @@ $hotels = $conn->query($sqlHotels);
   <input type="number" name="guests" id="guests" min="1" value="1"
     class="w-full border-2 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-400 text-[#001f3f]">
 </div>
+
+<input type="hidden" name="hotel_name" id="hotel_name">
+  <input type="hidden" name="hotel_price" id="hotel_price">
+  <input type="hidden" name="hotel_desc" id="hotel_desc">
 
         <!-- Submit -->
         <div class="pt-4">
@@ -161,23 +181,28 @@ $hotels = $conn->query($sqlHotels);
     }
 
     function updateHotelPreview() {
-      const select = document.getElementById('hotel');
-      const option = select.options[select.selectedIndex];
+    const select = document.getElementById('hotel');
+    const option = select.options[select.selectedIndex];
 
-      if (!option.value) {
-        document.getElementById('hotelPreview').classList.add('hidden');
-        return;
-      }
-
-      document.getElementById('hotelImg').src = option.getAttribute('data-img');
-      document.getElementById('hotelTitle').innerText = option.text;
-      document.getElementById('hotelDesc').innerText = option.getAttribute('data-desc');
-      document.getElementById('hotelPrice').innerText =
-        formatRupiah(option.getAttribute('data-price'));
-
-      document.getElementById('hotelPreview').classList.remove('hidden');
-      hitungTotal(); // langsung hitung total saat hotel dipilih
+    if (!option.value) {
+      document.getElementById('hotelPreview').classList.add('hidden');
+      return;
     }
+
+    // Tampilkan preview
+    document.getElementById('hotelImg').src = option.getAttribute('data-img');
+    document.getElementById('hotelTitle').innerText = option.getAttribute('data-name');
+    document.getElementById('hotelDesc').innerText = option.getAttribute('data-desc');
+    document.getElementById('hotelPrice').innerText = formatRupiah(option.getAttribute('data-price'));
+
+    // Isi hidden input supaya ikut terkirim
+    document.getElementById('hotel_name').value = option.getAttribute('data-name');
+    document.getElementById('hotel_price').value = option.getAttribute('data-price');
+    document.getElementById('hotel_desc').value = option.getAttribute('data-desc');
+
+    document.getElementById('hotelPreview').classList.remove('hidden');
+    hitungTotal();
+  }
 
     function hitungTotal() {
       const hotelSelect = document.getElementById('hotel');
@@ -210,6 +235,14 @@ $hotels = $conn->query($sqlHotels);
     document.getElementById('checkin').addEventListener('change', hitungTotal);
     document.getElementById('checkout').addEventListener('change', hitungTotal);
     document.getElementById('guests').addEventListener('input', hitungTotal);
+
+    window.addEventListener("DOMContentLoaded", () => {
+  const hotelSelect = document.getElementById('hotel');
+  if (hotelSelect.value) {
+    updateHotelPreview();
+  }
+});
+
   </script>
 </body>
 </html>

@@ -11,7 +11,7 @@ $result = $conn->query($sql);
 
 $sqlHotels = "SELECT * FROM hotels LIMIT 2";
 $resultHotels = $conn->query($sqlHotels);
-$sqlGallery = "SELECT * FROM hotels LIMIT 5";
+$sqlGallery = "SELECT * FROM hotels WHERE hotel_id IN (3,8,7,9,4)";
 $resultGallery = $conn->query($sqlGallery);
 ?>
 <!DOCTYPE html>
@@ -34,7 +34,7 @@ $resultGallery = $conn->query($sqlGallery);
     .hero {
       position: relative;
       height: 100vh;
-      background: url('../asset/index/bluehotelroom.jpg') no-repeat center center/cover;
+      background: url('../asset/bluehotelroom.jpg') no-repeat center center/cover;
       display: flex;
       align-items: center;
       color: #fff;
@@ -65,20 +65,17 @@ $resultGallery = $conn->query($sqlGallery);
     }
     .hero-carousel-wrapper { width: 50%; display: flex; flex-direction: column; align-items: center; }
     .hero-carousel .card {
-      width: 220px;
-      height: 300px;
-      border-radius: 16px;
-      margin: 0 10px;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      color: #fff;
-      font-weight: bold;
-      font-size: 20px;
-      box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+       width: 150px;
+  height: 100px;
+  border-radius: 16px;
+  margin: 0 8px;
+  background-size: contain;   /* 👈 agar gambar tidak kepotong */
+  background-repeat: no-repeat;
+  background-position: center;    /* 👈 kasih background putih biar rapi */
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.4);
     }
     .hero-nav {
       margin-top: 20px;
@@ -183,9 +180,10 @@ $resultGallery = $conn->query($sqlGallery);
         <?php 
         mysqli_data_seek($result, 0); 
         while($row = $result->fetch_assoc()) { ?>
-          <div class="card" style="background-image:url('../<?= $row['image_url'] ?>')">
-            <h3><?= htmlspecialchars($row['name']) ?></h3>
+        <a href="search.php?destination_id=<?= $row['destination_id'] ?>">
+          <div class="card" style="background-image:url('../<?= $row['image_url'] ?>')">  
           </div>
+        </a>
         <?php } ?>
       </div>
 
@@ -207,45 +205,41 @@ $resultGallery = $conn->query($sqlGallery);
 
 <!-- HOTEL GALLERY -->
 <section class="py-20 bg-white">
-   <div class="max-w-7xl mx-auto px-6 text-center mb-16">
+  <div class="max-w-7xl mx-auto px-6 text-center mb-16">
     <h2 class="text-4xl font-bold text-[#001f3f] mb-2">HOTELS GALLERIES</h2>
-    <p class=" text-[#001f3f]">Discover amazing places around the world</p>
+    <p class="text-[#001f3f]">Discover amazing places around the world</p>
   </div>
+
   <div class="flex flex-wrap justify-center gap-4">
-    <!-- item 1 -->
-    <div class="relative w-40 md:w-48 lg:w-56 h-56 overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:scale-105">
-      <img src="../asset/index/hotelviewnearthesea.png" class="w-full h-full object-cover" alt="Hotel 1">
-    </div>
-    <!-- item 2-->
-    <div class="relative w-40 md:w-48 lg:w-56 h-56 overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:scale-105 translate-y-6">
-      <img src="../asset/index/Hotel Del Coronado_ A Very Detailed Guide.png" class="w-full h-full object-cover" alt="Hotel 2">
-    </div>
-    <!-- item 3 -->
-    <div class="relative w-40 md:w-48 lg:w-56 h-56 overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:scale-105">
-      <img src="../asset/index/Marriott Hotels Kansas City.png" class="w-full h-full object-cover" alt="Hotel 3">
-    </div>
-    <!-- item 4-->
-    <div class="relative w-40 md:w-48 lg:w-56 h-56 overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:scale-105 translate-y-6">
-      <img src="../asset/index/travel.png" class="w-full h-full object-cover" alt="Hotel 4">
-    </div>
-    <!-- item 5 -->
-    <div class="relative w-40 md:w-48 lg:w-56 h-56 overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:scale-105">
-      <img src="../asset/index/32adbebe-a39b-4dcf-8a32-550d19e5541a.png" class="w-full h-full object-cover" alt="Hotel 5">
-    </div>
+    <?php while ($g = $resultGallery->fetch_assoc()) { ?>
+      <a href="booking.php?destination=<?= $g['destination_id'] ?>&hotel=<?= $g['hotel_id'] ?>" 
+         class="group relative block w-40 md:w-48 lg:w-56 h-56 rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+        
+        <img src="../<?= $g['image_hotel'] ?>" 
+             alt="Hotel <?= htmlspecialchars($g['hotel_id']) ?>" 
+             class="w-full h-full object-cover pointer-events-none">
+
+        <!-- Overlay teks opsional -->
+        <div class="absolute bottom-0 left-0 right-0 bg-black/40 text-white text-center text-sm py-2 opacity-0 group-hover:opacity-100 transition">
+          <?= htmlspecialchars($g['hotel_name'] ?? 'Hotel') ?>
+        </div>
+      </a>
+    <?php } ?>
   </div>
 </section>
+
 
 <!-- POPULAR PROPERTIES -->
 <section id="hotels" class="max-w-7xl mx-auto px-6 py-16">
   <div class="text-center mb-10">
-    <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">POPULAR PROPERTIES IN INDONESIA</h2>
+    <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">POPULAR PROPERTIES</h2>
     <p class=" text-white">Find your comfort hotels at TravelHub</p>
   </div>
   <div class="flex justify-center gap-3 mb-8">
     <button class="city-tab px-5 py-2 rounded-full font-medium text-white bg-blue-700" data-city="all">All</button>
     <?php
       // ambil daftar kota unik
-      $cities = $conn->query("SELECT DISTINCT city FROM hotels");
+      $cities = $conn->query("SELECT DISTINCT city FROM hotels WHERE hotel_id IN (1,2,3,4,5,6)");
       while($c = $cities->fetch_assoc()) {
         $cityName = trim($c['city']);
         echo '<button class="city-tab px-5 py-2 rounded-full font-medium bg-gray-200 text-gray-800 hover:bg-gray-300 transition" data-city="'.$cityName.'">'.$cityName.'</button>'; }
@@ -254,22 +248,25 @@ $resultGallery = $conn->query($sqlGallery);
 
   <div id="hotel-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     <?php
-      $hotels = $conn->query("SELECT * FROM hotels");
-      while($h = $hotels->fetch_assoc()) { ?>
-        <div class="hotel-card bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02]" data-city="<?= trim($h['city']) ?>">
-          <div class="relative">
-            <img src="../<?= $h['image_hotel'] ?>" alt="<?= htmlspecialchars($h['name']) ?>" class="w-full h-48 object-cover">
-            <!-- badge rating -->
-            <div class="absolute top-3 left-3 bg-blue-700 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
-              <?= $h['rating'] ?>/10 • <?= $h['reviews'] ?> reviews
-            </div>
-          </div>
-          <div class="p-4">
-            <h3 class="text-lg font-semibold text-gray-900 mb-1"><?= htmlspecialchars($h['name']) ?></h3>
-            <p class="text-sm text-gray-600"><?= htmlspecialchars($h['address']) ?></p>
-          </div>
+  $hotels = $conn->query("SELECT * FROM hotels LIMIT 6");
+  while($h = $hotels->fetch_assoc()) { ?>
+  <a href="booking.php?destination=<?= $h['destination_id'] ?>&hotel=<?= $h['hotel_id'] ?>">
+    <div class="hotel-card bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02]" data-city="<?= trim($h['city']) ?>">
+      <div class="relative">
+        <img src="../<?= $h['image_hotel'] ?>" alt="<?= htmlspecialchars($h['name']) ?>" class="w-full h-48 object-cover">
+        <!-- badge rating -->
+        <div class="absolute top-3 left-3 bg-blue-700 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
+          <?= $h['rating'] ?>/5 • <?= $h['reviews'] ?> reviews
         </div>
-    <?php } ?>
+      </div>
+      <div class="p-4">
+        <h3 class="text-lg font-semibold text-gray-900 mb-1"><?= htmlspecialchars($h['name']) ?></h3>
+        <p class="text-sm text-gray-600"><?= htmlspecialchars($h['address']) ?></p>
+      </div>
+    </div>
+  </a>
+<?php } ?>
+
   </div>
 </section>
 

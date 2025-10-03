@@ -16,7 +16,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $row = mysqli_fetch_assoc($result);
 
         if (password_verify($password, $row['password'])) {
-            $_SESSION['user'] = $row['username'];
+            $_SESSION['user'] = ['user_id' => $row['user_id'],
+                                'username' => $row['username'],
+            ];
             // arahkan langsung ke halaman utama (home.php)
             header("Location: ../page/index.php");
             exit();

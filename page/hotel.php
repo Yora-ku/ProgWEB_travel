@@ -1,10 +1,17 @@
 <?php
 include __DIR__ . "/../include/header.php";
+include __DIR__ . "/../config/connect.php";
 
 if (!isset($_SESSION['user'])) {
     header("Location: ../auth/login.php");
     exit();
-}
+}    
+
+    $sql = "SELECT * FROM destinations";
+    $result = $conn->query($sql);
+
+    $sql1 = "SELECT * FROM hotels WHERE hotel_id IN (10,11,12)";
+    $result1 = $conn->query($sql1);
 ?>
 
 <!DOCTYPE html>
@@ -59,10 +66,10 @@ if (!isset($_SESSION['user'])) {
     }
     .hero-carousel-wrapper { width: 50%; display: flex; flex-direction: column; align-items: center; }
     .hero-carousel .card {
-      width: 220px;
+      width: 170px;
       height: 300px;
       border-radius: 16px;
-      margin: 0 10px;
+      margin: 10px 10px;
       background-size: cover;
       background-position: center;
       position: relative;
@@ -72,6 +79,7 @@ if (!isset($_SESSION['user'])) {
       color: #fff;
       font-weight: bold;
       font-size: 20px;
+       border-radius: 16px;
       box-shadow: 0 12px 24px rgba(0,0,0,0.4);
     }
     .hero-nav {
@@ -126,10 +134,13 @@ if (!isset($_SESSION['user'])) {
       </div>
       <div class="hero-carousel-wrapper">
         <div class="hero-carousel owl-carousel">
-          <div class="card" style="background-image:url('../asset/hotels/swiss.jpg')"></div>
-          <div class="card" style="background-image:url('../asset/hotels/jepang.jpg')"></div>
-          <div class="card" style="background-image:url('../asset/hotels/italia.jpg')"></div>
-          <div class="card" style="background-image:url('../asset/hotels/perancis.jpg')"></div>
+          <?php
+          mysqli_data_seek($result1, 0); 
+          while($row1 = $result1->fetch_assoc()) { ?>
+          <a href="booking.php?destination=<?= $row1['destination_id'] ?>&hotel=<?= $row1['hotel_id'] ?>">
+          <div class="card" style="background-image: url('../<?= htmlspecialchars($row1['image_hotel']) ?>');"></div>
+          </a>
+          <?php } ?>
         </div>
         <div class="hero-nav">
           <button class="prev"><i class="fas fa-arrow-left"></i></button>
@@ -147,14 +158,14 @@ if (!isset($_SESSION['user'])) {
       <div class="w-96 h-96 mx-auto relative">
         <div 
           class="absolute inset-8 rounded-full flex items-center justify-center shadow-2xl overflow-hidden"
-          style="background-image: url('/pweb/ProgWEB_travel/asset/hotels/pesawat1.png'); background-position:center; background-size:cover; background-repeat:no-repeat;">
+          style="background-image: url('../asset/flight.jpeg'); background-position:center; background-size:cover; background-repeat:no-repeat;">
         </div>
       </div>
     </div>
 
     <div>
       <h2 class="text-4xl font-bold text-gray-800 mb-6">
-        Our Travels Have <br><span class=text-[#001f3f]">Adventures</span>
+        Our Travels Have <br><span class=text-[#001f3f]>Adventures</span>
       </h2>
       <p class="text-gray-600 mb-8 leading-relaxed">
         Experience unforgettable adventures with our carefully curated travel packages. 
@@ -187,11 +198,6 @@ if (!isset($_SESSION['user'])) {
 
   <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
     <?php
-    include __DIR__ . "/../config/connect.php"; 
-
-    $sql = "SELECT * FROM destinations";
-    $result = $conn->query($sql);
-
     if ($result && $result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
         echo '
@@ -202,8 +208,10 @@ if (!isset($_SESSION['user'])) {
           <div class="p-6 text-gray-800">
             <h4 class="font-bold mb-2">'.$row['name'].' - '.$row['location'].'</h4>
             <p class="text-gray-600 text-sm mb-4">'.substr($row['description'],0,100).'...</p>
-            <p class="text-blue-600 font-semibold mb-4">Rp '.number_format($row['price'],0,',','.').'</p>
-            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg">Learn More</button>
+            <a href="search.php?destination_id='.$row['destination_id'].'" 
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg inline-block">
+                Learn More
+            </a>
           </div>
         </div>';
       }
@@ -222,7 +230,7 @@ if (!isset($_SESSION['user'])) {
     <div class="flex justify-center">
       <div class="relative w-64 h-[520px] bg-black rounded-[2.5rem] shadow-2xl overflow-hidden">
         <div class="absolute top-0 left-1/2 w-24 h-6 bg-black rounded-b-2xl z-20" style="transform: translateX(-50%);"></div>
-        <img src="../asset/hotels/Flight Ticket Booking Landing Page1.jpg" alt="App Screenshot" class="w-full h-full object-cover">
+        <img src="../asset/Beautiful Paris.jpg" alt="App Screenshot" class="w-full h-full object-cover">
       </div>
     </div>
 
@@ -231,15 +239,15 @@ if (!isset($_SESSION['user'])) {
   <h2 class="text-4xl font-bold mb-6">Get free flight status updates on the go</h2>
   <ul class="space-y-6">
     <li class="flex items-start gap-4">
-      <img src="../asset/hotels/ticketpesawat.png" class="w-12 h-12 flex-shrink-0" alt="icon">
+      <img src="../asset/ticketpesawat.png" class="w-12 h-12 flex-shrink-0" alt="icon">
       <p class="flex-1">Track over <span class="font-bold">110,000 global flights</span> in real time</p>
     </li>
     <li class="flex items-start gap-4">
-      <img src="../asset/hotels/boarding.png" class="w-12 h-12 flex-shrink-0" alt="icon">
+      <img src="../asset/boarding.png" class="w-12 h-12 flex-shrink-0" alt="icon">
       <p class="flex-1">Easily navigate airports with check-in counter, boarding gate, and baggage claim info</p>
     </li>
     <li class="flex items-start gap-4">
-      <img src="../asset/hotels/realtimestatus.png" class="w-12 h-12 flex-shrink-0" alt="icon">
+      <img src="../asset/realtimestatus.png" class="w-12 h-12 flex-shrink-0" alt="icon">
       <p class="flex-1">Get <span class="font-bold">real-time flight status</span> updates anytime</p>
     </li>
   </ul>
@@ -258,7 +266,40 @@ if (!isset($_SESSION['user'])) {
       }
       updateIndicator({item:{index:0,count:$carousel.find('.owl-item:not(.cloned)').length},relatedTarget:{_clones:[]}});
     });
+
+    
   </script>
+
+ <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var successModal = new bootstrap.Modal(document.getElementById('checkoutSuccess'));
+      successModal.show();
+    });
+  </script>
+  <?php endif; ?>
+  <div class="modal fade" id="checkoutSuccess" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-dark">
+      
+      <div class="modal-header">
+        <h5 class="modal-title">✅ Your order has been accepted</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      
+      <div class="modal-body text-center">
+        <div class="transaction-id mb-3">
+          Transaction ID: <?= isset($_GET['booking_id']) ? htmlspecialchars($_GET['booking_id']) : rand(100000,999999) ?>
+        </div>
+        <a href="<?= base_url() ?>/page/hotel.php" class="btn btn-primary rounded-pill px-4">
+          Continue Shopping
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

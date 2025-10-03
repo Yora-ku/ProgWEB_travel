@@ -11,6 +11,7 @@ include_once __DIR__ . '/../config/baseurl.php';
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TravelHub — Hotels</title>
   <link href="<?= base_url('/src/output.css')?>" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-gray-900 text-gray-100 font-sans">
@@ -19,7 +20,7 @@ include_once __DIR__ . '/../config/baseurl.php';
     <div class="flex justify-end gap-4 text-sm text-gray-400 py-2">
       <?php if(isset($_SESSION['user'])): ?>
     <!-- Jika sudah login -->
-    <span>Welcome, <?= $_SESSION['user'] ?></span>
+    <span>Welcome, <?= $_SESSION['user']['username'] ?></span>
     <a href="<?= base_url('auth/logout.php') ?>" class="hover:text-white transition">Logout</a>
 <?php else: ?>
     <!-- Jika belum login -->
@@ -42,9 +43,9 @@ include_once __DIR__ . '/../config/baseurl.php';
 
       <!-- Nav Menu -->
       <nav class="flex gap-7">
-        <a href="<?= base_url('page/hotel.php') ?>" class="font-semibold text-gray-400 hover:text-white transition">Homes</a>
-        <a href="<?= base_url('page/index.php') ?>" class="font-semibold text-gray-400 hover:text-white transition">Hotels</a>
-        <a href="#contact" class="font-semibold text-gray-400 hover:text-white transition">Contact Us</a>
+        <a href="<?= base_url('/page/hotel.php') ?>" class="font-semibold text-gray-400 hover:text-white transition">Homes</a>
+        <a href="<?= base_url('/page/index.php') ?>" class="font-semibold text-gray-400 hover:text-white transition">Hotels</a>
+        <a href="<?= base_url('/page/index.php') ?>#contact" class="font-semibold text-gray-400 hover:text-white transition">Contact Us</a>
       </nav>
     </div>
   </header>
