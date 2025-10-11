@@ -17,6 +17,7 @@ $sql = "SELECT
             b.check_out, 
             b.guests,
             b.total_price,             
+            b.status,             
             d.name AS destination, 
             h.name AS hotel, 
             b.created_at
@@ -149,6 +150,7 @@ $result = $conn->query($sql);
             <th>Tamu</th>
             <th>Total</th>
             <th>Tanggal</th>
+            <th>Status</th>
             <th>Aksi</th>
           </tr>
         </thead>
@@ -166,12 +168,29 @@ $result = $conn->query($sql);
               <td><?= $row['guests'] ?></td>
               <td class="text-green-400 font-semibold">Rp <?= number_format($row['total_price'], 0, ',', '.') ?></td>
               <td class="text-sm text-gray-300"><?= date("d M Y", strtotime($row['created_at'])) ?></td>
+              <td>
+                <?php if ($row['status'] === 'Pending'): ?>
+                  <span class="text-yellow-400">Menunggu Pembayaran</span>
+                <?php elseif ($row['status'] === 'Confirmed'): ?>
+                  <span class="text-green-400">Terverifikasi</span>
+                <?php else: ?>
+                  <span class="text-red-400">Dibatalkan</span>
+                <?php endif; ?>
+              </td>
               <td class="text-center whitespace-nowrap">
-                <a href="editbooking.php?id=<?= $row['booking_id'] ?>" 
-                   class="inline-flex items-center bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded-md text-sm transition mr-2">Edit</a>
+                <?php if ($row['status'] === 'Pending'): ?>
+                  <a href="verifybooking.php?id=<?= $row['booking_id'] ?>" 
+                    onclick="return confirm('Verifikasi pembayaran booking ini?')" 
+                    class="inline-flex items-center bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded-md text-sm transition mr-2">Verifikasi</a>
+                <?php elseif ($row['status'] === 'Confirmed'): ?>
+                  <span class="bg-green-700 text-white px-3 py-1 rounded-md text-sm">✅ Terverifikasi</span>
+                <?php elseif ($row['status'] === 'Cancelled'): ?>
+                  <span class="bg-red-700 text-white px-3 py-1 rounded-md text-sm">❌ Dibatalkan</span>
+                <?php endif; ?>
+
                 <a href="deletebooking.php?id=<?= $row['booking_id'] ?>" 
-                   onclick="return confirm('Yakin ingin menghapus booking ini?')" 
-                   class="inline-flex items-center bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded-md text-sm transition">Hapus</a>
+                  onclick="return confirm('Yakin ingin menghapus booking ini?')" 
+                  class="inline-flex items-center bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded-md text-sm transition">Hapus</a>
               </td>
             </tr>
         <?php endwhile; else: ?>

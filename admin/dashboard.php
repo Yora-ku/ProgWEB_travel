@@ -126,7 +126,7 @@ usort($aktivitas, fn($a, $b) => strtotime($b['time']) - strtotime($a['time']));
       <nav class="flex flex-col gap-2">
   <a href="dashboard.php"><i class="bi bi-speedometer2"></i> Dashboard</a>
   <a href="destination-insert.php"><i class="bi bi-geo-alt-fill"></i> Destinations</a>
-  <a href="booking-data.php" class=""><i class="bi bi-calendar-check"></i> Booking</a>
+  <a href="verifybooking.php" class=""><i class="bi bi-calendar-check"></i> Booking</a>
   <a href="hotel-insert.php"><i class="bi bi-building"></i> Hotel</a>
       </nav>
       <div class="mt-auto">

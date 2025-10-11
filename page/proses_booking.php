@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Ambil data user login
-$user_id = $_SESSION['user'];
+$user_id = $_SESSION['user']['user_id'];
 
 // Ambil data dari form
 $destination_id = isset($_POST['destination']) ? intval($_POST['destination']) : null;
@@ -50,16 +50,22 @@ $total_price = $hotel_price * $nights * $guests;
 
 // Simpan booking ke database
 $stmt = $conn->prepare("
-    INSERT INTO bookings 
-    (user_id, hotel_id, destination_id, check_in, check_out, full_name, phone_number, total_price, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Pending')
+  INSERT INTO bookings (user_id, hotel_id, destination_id, check_in, check_out, full_name, phone_number, guests, total_price)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 ");
 
-$stmt->bind_param(
-    "iiissssd",
-    $user_id, $hotel_id, $destination_id,
-    $checkin, $checkout, $fullname, $phone, $total_price
+$stmt->bind_param("iiissssii",
+  $user_id,
+  $hotel_id,
+  $destination_id,
+  $checkin,
+  $checkout,
+  $fullname,
+  $phone,
+  $guests,
+  $total_price
 );
+
 
 if ($stmt->execute()) {
     $lastId = $stmt->insert_id;

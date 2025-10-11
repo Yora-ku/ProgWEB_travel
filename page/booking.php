@@ -65,20 +65,21 @@ $selectedHotel = isset($_GET['hotel']) ? intval($_GET['hotel']) : null;
         </div>
 
        <!-- Destinasi -->
-        <?php if ($selectedDest): ?>
-  <input type="hidden" name="destination" value="<?= $selectedDest ?>">
+        <!-- Selalu kirim hidden input -->
+<input type="hidden" name="destination" value="<?= $selectedDest ?? '' ?>">
 
+<?php if ($selectedDest): ?>
 <div>
   <label class="block font-bold mb-2 text-[#001f3f]">Destinasi</label>
-  <select name="destination" id="destination"
-    class="w-full border-2 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-400 text-[#001f3f]"<?= $selectedDest ? 'disabled' : '' ?>>
-    <option value="" class="text-[#001f3f]">Pilih destinasi</option>
-<?php while ($row = $destinations->fetch_assoc()): ?>
-  <option value="<?= $row['destination_id'] ?>"
-    <?= ($row['destination_id'] == $selectedDest) ? 'selected' : '' ?>>
-    <?= $row['name'] ?>
-  </option>
-<?php endwhile; ?>
+  <select id="destination"
+    class="w-full border-2 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-400 text-[#001f3f]"
+    disabled>
+    <option value="">Pilih destinasi</option>
+    <?php while ($row = $destinations->fetch_assoc()): ?>
+      <option value="<?= $row['destination_id'] ?>" <?= ($row['destination_id'] == $selectedDest) ? 'selected' : '' ?>>
+        <?= $row['name'] ?>
+      </option>
+    <?php endwhile; ?>
   </select>
 </div>
 <?php endif; ?>
